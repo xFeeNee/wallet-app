@@ -1,12 +1,18 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Transaction } from "../types/Transaction";
+import { View, Text, TouchableOpacity } from "react-native";
+import { globalStyles } from "../styles/globalStyles"; // Importujemy style globalne
 
-interface TransactionProps extends Transaction {
+interface TransactionProps {
+  id: number;
+  title: string;
+  amount: number;
+  category: string;
+  date: string;
   onDelete: () => void;
 }
 
 export default function TransactionItem({
+  id,
   title,
   amount,
   category,
@@ -14,66 +20,27 @@ export default function TransactionItem({
   onDelete,
 }: TransactionProps) {
   return (
-    <TouchableOpacity style={styles.container} onPress={onDelete}>
-      <View style={styles.info}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.date}>{date}</Text>
+    <View style={globalStyles.transactionContainer}>
+      <View style={globalStyles.transactionInfo}>
+        <Text style={globalStyles.transactionTitle}>{title}</Text>
+        <Text style={globalStyles.transactionDate}>{date}</Text>
       </View>
 
-      <View style={styles.details}>
+      <View style={globalStyles.transactionDetails}>
         <Text
-          style={[styles.amount, amount < 0 ? styles.expense : styles.income]}
+          style={[
+            globalStyles.transactionAmount,
+            amount < 0 ? globalStyles.expense : globalStyles.income,
+          ]}
         >
           {amount < 0 ? `- ${Math.abs(amount)} zł` : `+ ${amount} zł`}
         </Text>
-        <Text style={styles.category}>{category}</Text>
+        <Text style={globalStyles.transactionCategory}>{category}</Text>
       </View>
-    </TouchableOpacity>
+
+      <TouchableOpacity onPress={onDelete} style={globalStyles.deleteButton}>
+        <Text style={globalStyles.deleteButtonText}>Usuń</Text>
+      </TouchableOpacity>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#fff",
-    padding: 15,
-    marginVertical: 8,
-    borderRadius: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 2,
-  },
-  info: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#333",
-  },
-  date: {
-    fontSize: 12,
-    color: "#888",
-  },
-  details: {
-    alignItems: "flex-end",
-  },
-  amount: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  income: {
-    color: "#4CAF50",
-  },
-  expense: {
-    color: "#F44336",
-  },
-  category: {
-    fontSize: 12,
-    color: "#555",
-  },
-});
