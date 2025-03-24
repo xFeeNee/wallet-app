@@ -1,15 +1,21 @@
 import React, { useState } from "react";
-import { Modal, View, Text, Button, TextInput } from "react-native";
-import { Category, categoryOptions } from "../types/Transaction";
+import {
+  Modal,
+  View,
+  Text,
+  Button,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
 import { globalStyles } from "../styles/globalStyles";
-import { Picker } from "@react-native-picker/picker";
 
-// Definicja typu Filters w FilterModal.tsx
 interface Filters {
-  category: Category | "";
+  category: string;
   minAmount: string;
   maxAmount: string;
   date: string;
+  sortOrder: "asc" | "desc";
 }
 
 interface FilterModalProps {
@@ -23,63 +29,92 @@ const FilterModal: React.FC<FilterModalProps> = ({
   onClose,
   onApplyFilters,
 }) => {
-  const [category, setCategory] = useState<Category | "">("");
+  const [category, setCategory] = useState<string>("");
   const [minAmount, setMinAmount] = useState<string>("");
   const [maxAmount, setMaxAmount] = useState<string>("");
   const [date, setDate] = useState<string>("");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+  const handleSortToggle = () => {
+    const newOrder = sortOrder === "asc" ? "desc" : "asc";
+    setSortOrder(newOrder);
+  };
+
+  const handleResetFilters = () => {
+    setCategory("");
+    setMinAmount("");
+    setMaxAmount("");
+    setDate("");
+    setSortOrder("asc");
+  };
 
   const handleApplyFilters = () => {
-    const newFilters: Filters = {
-      category,
-      minAmount,
-      maxAmount,
-      date,
-    };
-    onApplyFilters(newFilters); // Przekazujemy nowe filtry do App.tsx
-    onClose(); // Zamknięcie modala po zastosowaniu filtrów
+    onApplyFilters({ category, minAmount, maxAmount, date, sortOrder });
+    onClose();
   };
 
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
-      <View style={globalStyles.filterModalContainer}>
-        <Text>Filtruj transakcje</Text>
+      <View style={globalStyles.filterContainer}>
+        <Text style={globalStyles.title}>🔎 Ustaw Filtr</Text>
 
-        {/* Kategoria */}
-        <Text>Kategoria:</Text>
-        <Picker selectedValue={category} onValueChange={setCategory}>
-          <Picker.Item label="Wybierz kategorię" value="" />
-          {categoryOptions.map((option) => (
-            <Picker.Item key={option} label={option} value={option} />
-          ))}
-        </Picker>
-
-        {/* Kwota */}
-        <Text>Minimalna kwota:</Text>
         <TextInput
-          keyboardType="numeric"
+          style={globalStyles.input}
+          placeholder="Kategoria"
+          value={category}
+          onChangeText={setCategory}
+        />
+
+        <TextInput
+          style={globalStyles.input}
           placeholder="Min kwota"
+          keyboardType="numeric"
           value={minAmount}
           onChangeText={setMinAmount}
         />
-        <Text>Maksymalna kwota:</Text>
+
         <TextInput
-          keyboardType="numeric"
+          style={globalStyles.input}
           placeholder="Max kwota"
+          keyboardType="numeric"
           value={maxAmount}
           onChangeText={setMaxAmount}
         />
+        <View style={globalStyles.iconRow}>
+          <TouchableOpacity
+            onPress={handleSortToggle}
+            style={globalStyles.sortIconContainer}
+          >
+            <Icon
+              name={
+                sortOrder === "asc" ? "sort-amount-asc" : "sort-amount-desc"
+              }
+              size={24}
+              color="#1976D2"
+            />
+            <Text style={globalStyles.sortIconText}>
+              {sortOrder === "asc" ? " Rosnąco" : " Malejąco"}
+            </Text>
+          </TouchableOpacity>
 
-        {/* Data */}
-        <Text>Data (format: YYYY-MM-DD):</Text>
-        <TextInput
-          placeholder="Wpisz datę"
-          value={date}
-          onChangeText={setDate}
-        />
+          <TouchableOpacity
+            onPress={handleResetFilters}
+            style={globalStyles.resetIconContainer}
+          >
+            <Icon name="undo" size={24} color="#F44336" />
+            <Text style={globalStyles.resetIconText}>Resetuj</Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity
+          style={globalStyles.filterButton}
+          onPress={handleApplyFilters}
+        >
+          <Text style={globalStyles.filterButtonText}>ZASTOSUJ FILTRY</Text>
+        </TouchableOpacity>
 
-        {/* Przycisk zastosowania filtrów */}
-        <Button title="Zastosuj filtry" onPress={handleApplyFilters} />
-        <Button title="Anuluj" onPress={onClose} />
+        <TouchableOpacity style={globalStyles.cancelButton} onPress={onClose}>
+          <Text style={globalStyles.filterButtonText}>ANULUJ</Text>
+        </TouchableOpacity>
       </View>
     </Modal>
   );
