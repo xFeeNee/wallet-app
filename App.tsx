@@ -11,8 +11,11 @@ import { Transaction } from "./types/Transaction";
 import AddTransactionModal from "./components/AddTransactionModal";
 import FilterModal from "./components/FilterModal";
 import TransactionItem from "./components/TransactionItem";
-import { globalStyles } from "./styles/globalStyles";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { layoutStyles } from "./styles/layoutStyles";
+import { typographyStyles } from "./styles/typographyStyles";
+import { transactionStyles } from "./styles/transactionStyles";
+import { buttonStyles } from "./styles/buttonStyles";
 
 export default function App() {
   const [transactions, setTransactions] = useState<Transaction[]>([
@@ -93,27 +96,29 @@ export default function App() {
     );
 
   return (
-    <SafeAreaView style={globalStyles.container}>
-      <Text style={globalStyles.title}>💰 Monitor Portfela</Text>
+    <SafeAreaView style={layoutStyles.container}>
+      <Text style={typographyStyles.title}>💰 Monitor Portfela</Text>
 
-      <View style={globalStyles.balanceContainer}>
-        <Text style={globalStyles.balanceTitle}>
+      <View style={transactionStyles.balanceContainer}>
+        <Text style={typographyStyles.balanceTitle}>
           Saldo: {calculateBalance().toFixed(2)} zł
         </Text>
       </View>
 
-      <View style={globalStyles.buttonRow}>
+      <View style={layoutStyles.buttonRow}>
         <TouchableOpacity
-          style={globalStyles.addTransactionButton}
+          style={buttonStyles.addTransactionButton}
           onPress={() => setAddTransactionModalVisible(true)}
         >
           <Icon name="plus" size={18} color="#fff" />
-          <Text style={globalStyles.addTransactionText}>DODAJ TRANSAKCJĘ</Text>
+          <Text style={typographyStyles.addTransactionText}>
+            DODAJ TRANSAKCJĘ
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           onPress={() => setFilterModalVisible(true)}
-          style={globalStyles.filterButtonSmall}
+          style={buttonStyles.filterButtonSmall}
         >
           <Icon name="sliders" size={18} color="#1976D2" />
         </TouchableOpacity>

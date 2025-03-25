@@ -1,6 +1,9 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import { globalStyles } from "../styles/globalStyles"; // Importujemy style globalne
+import { layoutStyles } from "../styles/layoutStyles";
+import { buttonStyles } from "../styles/buttonStyles";
+import { typographyStyles } from "../styles/typographyStyles";
+import { transactionStyles } from "../styles/transactionStyles";
 
 interface TransactionProps {
   id: number;
@@ -20,26 +23,26 @@ export default function TransactionItem({
   onDelete,
 }: TransactionProps) {
   return (
-    <View style={globalStyles.transactionContainer}>
-      <View style={globalStyles.transactionInfo}>
-        <Text style={globalStyles.transactionTitle}>{title}</Text>
-        <Text style={globalStyles.transactionDate}>{date}</Text>
+    <View style={transactionStyles.transactionContainer}>
+      <View style={transactionStyles.transactionInfo}>
+        <Text style={transactionStyles.transactionTitle}>{title}</Text>
+        <Text style={transactionStyles.transactionDate}>{date}</Text>
       </View>
 
-      <View style={globalStyles.transactionDetails}>
+      <View style={transactionStyles.transactionDetails}>
         <Text
           style={[
-            globalStyles.transactionAmount,
-            amount < 0 ? globalStyles.expense : globalStyles.income,
+            transactionStyles.transactionAmount,
+            amount < 0 ? transactionStyles.expense : transactionStyles.income,
           ]}
         >
           {amount < 0 ? `- ${Math.abs(amount)} zł` : `+ ${amount} zł`}
         </Text>
-        <Text style={globalStyles.transactionCategory}>{category}</Text>
+        <Text style={transactionStyles.transactionCategory}>{category}</Text>
       </View>
 
-      <TouchableOpacity onPress={onDelete} style={globalStyles.deleteButton}>
-        <Text style={globalStyles.deleteButtonText}>Usuń</Text>
+      <TouchableOpacity onPress={onDelete} style={buttonStyles.deleteButton}>
+        <Text style={typographyStyles.deleteButtonText}>Usuń</Text>
       </TouchableOpacity>
     </View>
   );

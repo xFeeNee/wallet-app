@@ -8,7 +8,10 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { globalStyles } from "../styles/globalStyles";
+import { layoutStyles } from "../styles/layoutStyles";
+import { buttonStyles } from "../styles/buttonStyles";
+import { typographyStyles } from "../styles/typographyStyles";
+import { modalStyles } from "../styles/modalStyles";
 
 interface Filters {
   category: string;
@@ -55,18 +58,18 @@ const FilterModal: React.FC<FilterModalProps> = ({
 
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
-      <View style={globalStyles.filterContainer}>
-        <Text style={globalStyles.title}>🔎 Ustaw Filtr</Text>
+      <View style={modalStyles.filterContainer}>
+        <Text style={typographyStyles.title}>🔎 Ustaw Filtr</Text>
 
         <TextInput
-          style={globalStyles.input}
+          style={layoutStyles.input}
           placeholder="Kategoria"
           value={category}
           onChangeText={setCategory}
         />
 
         <TextInput
-          style={globalStyles.input}
+          style={layoutStyles.input}
           placeholder="Min kwota"
           keyboardType="numeric"
           value={minAmount}
@@ -74,16 +77,16 @@ const FilterModal: React.FC<FilterModalProps> = ({
         />
 
         <TextInput
-          style={globalStyles.input}
+          style={layoutStyles.input}
           placeholder="Max kwota"
           keyboardType="numeric"
           value={maxAmount}
           onChangeText={setMaxAmount}
         />
-        <View style={globalStyles.iconRow}>
+        <View style={layoutStyles.iconRow}>
           <TouchableOpacity
             onPress={handleSortToggle}
-            style={globalStyles.sortIconContainer}
+            style={modalStyles.sortIconContainer}
           >
             <Icon
               name={
@@ -92,28 +95,28 @@ const FilterModal: React.FC<FilterModalProps> = ({
               size={24}
               color="#1976D2"
             />
-            <Text style={globalStyles.sortIconText}>
+            <Text style={typographyStyles.sortIconText}>
               {sortOrder === "asc" ? " Rosnąco" : " Malejąco"}
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={handleResetFilters}
-            style={globalStyles.resetIconContainer}
+            style={typographyStyles.resetIconContainer}
           >
             <Icon name="undo" size={24} color="#F44336" />
-            <Text style={globalStyles.resetIconText}>Resetuj</Text>
+            <Text style={typographyStyles.resetIconText}>Resetuj</Text>
           </TouchableOpacity>
         </View>
         <TouchableOpacity
-          style={globalStyles.filterButton}
+          style={buttonStyles.filterButton}
           onPress={handleApplyFilters}
         >
-          <Text style={globalStyles.filterButtonText}>ZASTOSUJ FILTRY</Text>
+          <Text style={typographyStyles.filterButtonText}>ZASTOSUJ FILTRY</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={globalStyles.cancelButton} onPress={onClose}>
-          <Text style={globalStyles.filterButtonText}>ANULUJ</Text>
+        <TouchableOpacity style={buttonStyles.cancelButton} onPress={onClose}>
+          <Text style={typographyStyles.filterButtonText}>ANULUJ</Text>
         </TouchableOpacity>
       </View>
     </Modal>

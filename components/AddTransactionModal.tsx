@@ -12,7 +12,11 @@ import {
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { Transaction, Category } from "../types/Transaction";
-import { globalStyles } from "../styles/globalStyles";
+import { layoutStyles } from "../styles/layoutStyles";
+import { buttonStyles } from "../styles/buttonStyles";
+import { typographyStyles } from "../styles/typographyStyles";
+import { modalStyles } from "../styles/modalStyles";
+import { transactionStyles } from "../styles/transactionStyles";
 
 interface AddTransactionModalProps {
   visible: boolean;
@@ -70,20 +74,20 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"} // Automatyczne dostosowanie dla iOS i Androida
-        style={globalStyles.modalBackground}
+        style={modalStyles.modalBackground}
       >
-        <View style={globalStyles.modalContainer}>
-          <Text style={globalStyles.title}>➕ Dodaj nową transakcję</Text>
+        <View style={modalStyles.modalContainer}>
+          <Text style={typographyStyles.title}>➕ Dodaj nową transakcję</Text>
 
           <TextInput
-            style={globalStyles.input}
+            style={layoutStyles.input}
             placeholder="Nazwa"
             value={title}
             onChangeText={setTitle}
           />
 
           <TextInput
-            style={globalStyles.input}
+            style={layoutStyles.input}
             placeholder="Kwota"
             keyboardType="numeric"
             value={amount}
@@ -93,7 +97,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
           <Picker
             selectedValue={category}
             onValueChange={(value) => setCategory(value as Category)}
-            style={globalStyles.input}
+            style={layoutStyles.input}
           >
             <Picker.Item label="Wybierz kategorię" value="" />
             {categoryOptions.map((option) => (
@@ -102,7 +106,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
           </Picker>
 
           <TextInput
-            style={globalStyles.input}
+            style={layoutStyles.input}
             placeholder="Data (np. 22.03.2025)"
             value={date}
             onChangeText={setDate}
