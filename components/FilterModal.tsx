@@ -83,7 +83,9 @@ const FilterModal: React.FC<FilterModalProps> = ({
           value={maxAmount}
           onChangeText={setMaxAmount}
         />
-        <View style={layoutStyles.iconRow}>
+
+        {/* Kontener na ikonę sortowania */}
+        <View style={modalStyles.iconRow}>
           <TouchableOpacity
             onPress={handleSortToggle}
             style={modalStyles.sortIconContainer}
@@ -108,16 +110,22 @@ const FilterModal: React.FC<FilterModalProps> = ({
             <Text style={typographyStyles.resetIconText}>Resetuj</Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          style={buttonStyles.filterButton}
-          onPress={handleApplyFilters}
-        >
-          <Text style={typographyStyles.filterButtonText}>ZASTOSUJ FILTRY</Text>
-        </TouchableOpacity>
 
-        <TouchableOpacity style={buttonStyles.cancelButton} onPress={onClose}>
-          <Text style={typographyStyles.filterButtonText}>ANULUJ</Text>
-        </TouchableOpacity>
+        {/* Przyciski: zastosuj filtry i anuluj */}
+        <View style={modalStyles.buttonContainer}>
+          <TouchableOpacity
+            style={buttonStyles.filterButton}
+            onPress={handleApplyFilters}
+          >
+            <Text style={typographyStyles.filterButtonText}>
+              ZASTOSUJ FILTRY
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={buttonStyles.cancelButton} onPress={onClose}>
+            <Text style={typographyStyles.filterButtonText}>ANULUJ</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </Modal>
   );

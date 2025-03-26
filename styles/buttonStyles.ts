@@ -35,6 +35,7 @@ export const buttonStyles = StyleSheet.create({
     borderRadius: 8,
     alignItems: "center",
     marginVertical: 5,
+    width: "100%",
   },
   closeButton: {
     marginTop: 15,
