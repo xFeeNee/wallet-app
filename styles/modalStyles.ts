@@ -1,84 +1,94 @@
+// modalStyles.ts
 import { StyleSheet } from "react-native";
 
 export const modalStyles = StyleSheet.create({
-  // Tło modalu
   modalBackground: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Półprzezroczyste tło
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
-
-  // Kontener dla całego modalu
   modalContainer: {
-    backgroundColor: "#fff", // Białe tło modalu
-    width: "80%", // Szerokość modalu dostosowana do ekranu
+    backgroundColor: "#fff",
     padding: 20,
-    borderRadius: 15, // Zaokrąglone rogi
+    borderRadius: 20,
+    width: "85%", // Szerokość modal
     alignItems: "center",
   },
-
-  // Nagłówek modalu (dodajemy większy tytuł)
   title: {
     fontSize: 24,
     fontWeight: "bold",
+    color: "#1976D2",
     marginBottom: 20,
-    textAlign: "center",
-    color: "#1976D2", // Kolor niebieski
   },
-
-  // Styl dla przycisków w modalnym formularzu
+  input: {
+    width: "100%",
+    height: 50,
+    fontSize: 16,
+    marginBottom: 20,
+    paddingHorizontal: 15,
+    borderRadius: 12,
+    borderColor: "#1976D2",
+    borderWidth: 1,
+  },
+  picker: {
+    width: "100%",
+    height: 50,
+    paddingHorizontal: 10,
+    borderRadius: 12,
+    borderColor: "#1976D2",
+    borderWidth: 1,
+    marginBottom: 20,
+  },
   buttonContainer: {
-    flexDirection: "column",
     width: "100%",
     marginTop: 20,
-    alignItems: "center",
   },
-
-  // Styl dla każdego Picker'a
-  pickerContainer: {
-    marginBottom: 20,
-    width: "100%",
-  },
-
-  // Dodatkowe stylizowanie dla inputów
-  input: {
-    height: 50,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 10,
-    marginBottom: 20,
-    paddingLeft: 15,
-    fontSize: 16,
-    width: "100%",
-    backgroundColor: "#fff",
-    color: "#333",
-  },
-  filterContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Półprzezroczyste tło
-    padding: 20,
-  },
-  // Ikona i tekst przycisku sortowania
   sortIconContainer: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 10,
-  },
-
-  // Styl dla ikon sortowania
-  sortIconText: {
-    fontSize: 16,
-    marginLeft: 10,
-    color: "#1976D2", // Kolor niebieski
+    marginBottom: 10,
   },
   iconRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
-    marginVertical: 20,
+    marginBottom: 20,
+  },
+  filterContainer: {
+    padding: 20,
     alignItems: "center",
+  },
+
+  // Zaktualizowanie przycisków z obramowaniem i zaokrąglonymi rogami
+  filterButton: {
+    backgroundColor: "#1976D2",
+    paddingVertical: 16,
+    borderRadius: 12,
+    width: "100%",
+    marginBottom: 10,
+    alignItems: "center",
+    borderColor: "#1976D2", // Dodanie obramowania
+    borderWidth: 1, // Obramowanie przycisku
+  },
+  cancelButton: {
+    backgroundColor: "#F44336",
+    paddingVertical: 16,
+    borderRadius: 12,
+    width: "100%",
+    marginBottom: 10,
+    alignItems: "center",
+    borderColor: "#F44336", // Obramowanie przycisku
+    borderWidth: 1, // Obramowanie przycisku
+  },
+  addTransactionButton: {
+    backgroundColor: "#1976D2",
+    paddingVertical: 16,
+    borderRadius: 12,
+    width: "100%",
+    marginBottom: 10,
+    alignItems: "center",
+    borderColor: "#1976D2", // Dodane obramowanie
+    borderWidth: 1, // Obramowanie przycisku
   },
 });

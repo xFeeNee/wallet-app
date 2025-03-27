@@ -3,7 +3,6 @@ import {
   Modal,
   View,
   TextInput,
-  Button,
   Alert,
   Text,
   KeyboardAvoidingView,
@@ -11,19 +10,17 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { Transaction, Category } from "../types/Transaction";
 import { layoutStyles } from "../styles/layoutStyles";
 import { buttonStyles } from "../styles/buttonStyles";
 import { typographyStyles } from "../styles/typographyStyles";
 import { modalStyles } from "../styles/modalStyles";
-import { transactionStyles } from "../styles/transactionStyles";
+import { Transaction, Category } from "../types/Transaction";
 
 interface AddTransactionModalProps {
   visible: boolean;
   onClose: () => void;
   onAddTransaction: (newTransaction: Transaction) => void;
 }
-
 const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
   visible,
   onClose,
@@ -61,7 +58,6 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
     };
 
     onAddTransaction(newTransaction);
-
     setTitle("");
     setAmount("");
     setCategory("");
@@ -90,7 +86,6 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
             value={title}
             onChangeText={setTitle}
           />
-
           <TextInput
             style={modalStyles.input}
             placeholder="Kwota"
@@ -99,10 +94,11 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
             onChangeText={setAmount}
           />
 
+          {/* Picker dla kategorii */}
           <Picker
             selectedValue={category}
             onValueChange={(value) => setCategory(value as Category)}
-            style={modalStyles.input}
+            style={modalStyles.picker}
           >
             <Picker.Item label="Wybierz kategorię" value="" />
             {categoryOptions.map((option) => (
@@ -110,12 +106,13 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
             ))}
           </Picker>
 
+          {/* Picker dla typu transakcji */}
           <Picker
             selectedValue={transactionType}
             onValueChange={(value) =>
               setTransactionType(value as "income" | "expense")
             }
-            style={modalStyles.input}
+            style={modalStyles.picker}
           >
             <Picker.Item label="Przychód" value="income" />
             <Picker.Item label="Wydatek" value="expense" />
@@ -130,7 +127,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
 
           <View style={modalStyles.buttonContainer}>
             <TouchableOpacity
-              style={layoutStyles.addTransactionButton}
+              style={modalStyles.addTransactionButton}
               onPress={handleAddTransaction}
             >
               <Text style={typographyStyles.addTransactionText}>
@@ -139,7 +136,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={buttonStyles.cancelButton}
+              style={modalStyles.cancelButton}
               onPress={onClose}
             >
               <Text style={typographyStyles.addTransactionText}>ANULUJ</Text>

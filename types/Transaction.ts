@@ -1,3 +1,4 @@
+// types/Transaction.ts
 export type Category =
   | "Jedzenie 🍔"
   | "Transport 🚗"
@@ -9,14 +10,6 @@ export interface Transaction {
   id: number;
   title: string;
   amount: number;
-  category: Category; // Teraz kategoria może zawierać emoji
+  category: Category;
   date: string;
 }
-// 🔹 Lista dostępnych kategorii (dzięki export łatwo ją zaimportujesz w innych plikach)
-export const categoryOptions: Category[] = [
-  "Jedzenie 🍔",
-  "Transport 🚗",
-  "Zakupy 🛍️",
-  "Rachunki 💳",
-  "Inne 🔄",
-];
