@@ -8,33 +8,42 @@ import {
   KeyboardAvoidingView,
   Platform,
   TouchableOpacity,
+  ScrollView,
+  Switch,
 } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { ActionSheetIOS } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { layoutStyles } from "../styles/layoutStyles";
 import { buttonStyles } from "../styles/buttonStyles";
 import { typographyStyles } from "../styles/typographyStyles";
-import { modalStyles } from "../styles/modalStyles";
-import { Transaction, Category } from "../types/Transaction";
+import { modalStyles, switchStyles } from "../styles/modalStyles";
 
 interface AddTransactionModalProps {
   visible: boolean;
   onClose: () => void;
-  onAddTransaction: (newTransaction: Transaction) => void;
+  onAddTransaction: (transaction: {
+    id: number;
+    title: string;
+    amount: number;
+    category: string;
+    date: string;
+  }) => void;
 }
+
 const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
   visible,
   onClose,
   onAddTransaction,
 }) => {
-  const [title, setTitle] = useState<string>("");
-  const [amount, setAmount] = useState<string>("");
-  const [category, setCategory] = useState<Category | "">("");
-  const [date, setDate] = useState<string>("");
-  const [transactionType, setTransactionType] = useState<"income" | "expense">(
-    "income"
-  );
+  const [title, setTitle] = useState("");
+  const [amount, setAmount] = useState("");
+  const [category, setCategory] = useState("");
+  const [date, setDate] = useState("");
+  const [transactionType, setTransactionType] = useState("income");
+  const [isExpense, setIsExpense] = useState(false);
 
-  const categoryOptions: Category[] = [
+  const categoryOptions = [
     "Jedzenie 🍔",
     "Transport 🚗",
     "Zakupy 🛍️",
@@ -48,12 +57,12 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
       return;
     }
 
-    const newTransaction: Transaction = {
+    const newTransaction = {
       id: Date.now(),
       title,
       amount:
         transactionType === "income" ? parseFloat(amount) : -parseFloat(amount),
-      category: category as Category,
+      category,
       date,
     };
 
@@ -69,7 +78,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
   return (
     <Modal
       visible={visible}
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       onRequestClose={onClose}
     >
@@ -78,68 +87,117 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
         style={modalStyles.modalBackground}
       >
         <View style={modalStyles.modalContainer}>
-          <Text style={modalStyles.title}>➕ Dodaj nową transakcję</Text>
+          {/* Nagłówek */}
+          <View style={modalStyles.modalHeader}>
+            <Text style={modalStyles.modalTitle}>➕ Dodaj nową transakcję</Text>
+            <TouchableOpacity onPress={onClose}>
+              <Icon name="times" size={24} color="#333" />
+            </TouchableOpacity>
+          </View>
 
-          <TextInput
-            style={modalStyles.input}
-            placeholder="Nazwa"
-            value={title}
-            onChangeText={setTitle}
-          />
-          <TextInput
-            style={modalStyles.input}
-            placeholder="Kwota"
-            keyboardType="numeric"
-            value={amount}
-            onChangeText={setAmount}
-          />
+          {/* Główna zawartość */}
+          <ScrollView style={modalStyles.modalBody}>
+            <TextInput
+              style={layoutStyles.inputField}
+              placeholder="Nazwa"
+              value={title}
+              onChangeText={setTitle}
+            />
 
-          {/* Picker dla kategorii */}
-          <Picker
-            selectedValue={category}
-            onValueChange={(value) => setCategory(value as Category)}
-            style={modalStyles.picker}
-          >
-            <Picker.Item label="Wybierz kategorię" value="" />
-            {categoryOptions.map((option) => (
-              <Picker.Item key={option} label={option} value={option} />
-            ))}
-          </Picker>
+            <TextInput
+              style={layoutStyles.inputField}
+              placeholder="Kwota"
+              keyboardType="numeric"
+              value={amount}
+              onChangeText={setAmount}
+            />
 
-          {/* Picker dla typu transakcji */}
-          <Picker
-            selectedValue={transactionType}
-            onValueChange={(value) =>
-              setTransactionType(value as "income" | "expense")
-            }
-            style={modalStyles.picker}
-          >
-            <Picker.Item label="Przychód" value="income" />
-            <Picker.Item label="Wydatek" value="expense" />
-          </Picker>
+            <TextInput
+              style={layoutStyles.inputField}
+              placeholder="Data (np. 22.03.2025)"
+              value={date}
+              onChangeText={setDate}
+            />
 
-          <TextInput
-            style={modalStyles.input}
-            placeholder="Data (np. 22.03.2025)"
-            value={date}
-            onChangeText={setDate}
-          />
+            {/* Wybór kategorii */}
+            {Platform.OS === "ios" ? (
+              <TouchableOpacity
+                style={layoutStyles.inputField}
+                onPress={() =>
+                  ActionSheetIOS.showActionSheetWithOptions(
+                    {
+                      options: [...categoryOptions, "Anuluj"],
+                      cancelButtonIndex: categoryOptions.length,
+                    },
+                    (buttonIndex) => {
+                      if (buttonIndex !== categoryOptions.length) {
+                        setCategory(categoryOptions[buttonIndex]);
+                      }
+                    }
+                  )
+                }
+              >
+                <Text>{category ? category : "Wybierz kategorię"}</Text>
+              </TouchableOpacity>
+            ) : (
+              <View style={layoutStyles.inputField}>
+                <Picker
+                  selectedValue={category}
+                  onValueChange={(itemValue) => setCategory(itemValue)}
+                  style={{ height: 50, width: "100%" }}
+                >
+                  <Picker.Item label="Wybierz kategorię" value="" />
+                  {categoryOptions.map((option) => (
+                    <Picker.Item label={option} value={option} key={option} />
+                  ))}
+                </Picker>
+              </View>
+            )}
+          </ScrollView>
 
-          <View style={modalStyles.buttonContainer}>
+          {/* Wybór typu transakcji */}
+          <View style={switchStyles.switchContainer}>
+            <Text
+              style={[
+                switchStyles.switchLabel,
+                !isExpense ? switchStyles.activeLabel : undefined,
+              ]}
+            >
+              Przychód
+            </Text>
+            <Switch
+              trackColor={{ false: "#4CAF50", true: "#F44336" }}
+              thumbColor={isExpense ? "#fff" : "#fff"}
+              ios_backgroundColor="#4CAF50"
+              onValueChange={() => setIsExpense((prevState) => !prevState)}
+              value={isExpense}
+            />
+            <Text
+              style={[
+                switchStyles.switchLabel,
+                isExpense ? switchStyles.activeLabel : undefined,
+              ]}
+            >
+              Wydatek
+            </Text>
+          </View>
+
+          {/* Stopka z przyciskami */}
+          <View style={modalStyles.modalFooter}>
             <TouchableOpacity
-              style={modalStyles.addTransactionButton}
+              style={buttonStyles.primaryButton}
               onPress={handleAddTransaction}
             >
-              <Text style={typographyStyles.addTransactionText}>
+              <Text style={typographyStyles.filterButtonText}>
                 DODAJ TRANSAKCJĘ
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={modalStyles.cancelButton}
+              style={buttonStyles.secondaryButton}
               onPress={onClose}
             >
-              <Text style={typographyStyles.addTransactionText}>ANULUJ</Text>
+              <Text style={typographyStyles.filterButtonText}>ANULUJ</Text>
             </TouchableOpacity>
           </View>
         </View>

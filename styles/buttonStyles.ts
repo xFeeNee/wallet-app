@@ -22,20 +22,23 @@ export const buttonStyles = StyleSheet.create({
     width: 45,
     height: 45,
   },
-  filterButton: {
+  primaryButton: {
     backgroundColor: "#1976D2",
     paddingVertical: 12,
+    paddingHorizontal: 20,
     borderRadius: 8,
     alignItems: "center",
+    justifyContent: "center",
     marginVertical: 5,
   },
-  cancelButton: {
+  secondaryButton: {
     backgroundColor: "#F44336",
     paddingVertical: 12,
+    paddingHorizontal: 20,
     borderRadius: 8,
     alignItems: "center",
+    justifyContent: "center",
     marginVertical: 5,
-    width: "100%",
   },
   closeButton: {
     marginTop: 15,
@@ -49,5 +52,12 @@ export const buttonStyles = StyleSheet.create({
     padding: 5,
     borderRadius: 5,
     marginLeft: 10,
+  },
+  buttonContainerHorizontal: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  buttonContainerVertical: {
+    flexDirection: "column",
   },
 });

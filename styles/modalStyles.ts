@@ -1,25 +1,70 @@
 // modalStyles.ts
-import { StyleSheet } from "react-native";
+import { StyleSheet, TextStyle, ViewStyle } from "react-native";
+
+interface SwitchStyles {
+  switchContainer: ViewStyle;
+  switchLabel: TextStyle;
+  activeLabel: TextStyle;
+}
 
 export const modalStyles = StyleSheet.create({
   modalBackground: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "rgba(0, 0, 0, 0.1)",
+  },
+  pickerLabel: {
+    fontSize: 16,
+    marginBottom: 5,
+    color: "#333",
+  },
+  picker: {
+    height: 50,
+    width: "100%",
+    backgroundColor: "#f0f0f0",
+    borderRadius: 8,
+  },
+  pickerItem: {
+    fontSize: 16,
+  },
+
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 15,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+  },
+  modalFooter: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 15,
+    paddingTop: 15,
+    borderTopWidth: 1,
+    borderTopColor: "#eee",
+    gap: 10,
+  },
+  modalBody: {
+    paddingVertical: 10,
   },
   modalContainer: {
-    backgroundColor: "#fff",
-    padding: 20,
-    borderRadius: 20,
-    width: "85%", // Szerokość modal
-    alignItems: "center",
+    backgroundColor: "white",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingTop: 20,
+    paddingHorizontal: 20,
+    paddingBottom: 20, // Upewnij się, że to jest ustawione
+    width: "100%",
+    maxHeight: "90%", // Możesz dostosować tę wartość
   },
-  title: {
-    fontSize: 24,
+
+  modalTitle: {
+    fontSize: 20,
     fontWeight: "bold",
     color: "#1976D2",
-    marginBottom: 20,
   },
   input: {
     width: "100%",
@@ -31,14 +76,9 @@ export const modalStyles = StyleSheet.create({
     borderColor: "#1976D2",
     borderWidth: 1,
   },
-  picker: {
-    width: "100%",
-    height: 50,
-    paddingHorizontal: 10,
-    borderRadius: 12,
-    borderColor: "#1976D2",
-    borderWidth: 1,
-    marginBottom: 20,
+  pickerContainer: {
+    marginBottom: 15,
+    zIndex: 9999,
   },
   buttonContainer: {
     width: "100%",
@@ -52,15 +92,12 @@ export const modalStyles = StyleSheet.create({
   iconRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: "100%",
-    marginBottom: 20,
+    marginVertical: 15,
   },
   filterContainer: {
     padding: 20,
     alignItems: "center",
   },
-
-  // Zaktualizowanie przycisków z obramowaniem i zaokrąglonymi rogami
   filterButton: {
     backgroundColor: "#1976D2",
     paddingVertical: 16,
@@ -68,8 +105,8 @@ export const modalStyles = StyleSheet.create({
     width: "100%",
     marginBottom: 10,
     alignItems: "center",
-    borderColor: "#1976D2", // Dodanie obramowania
-    borderWidth: 1, // Obramowanie przycisku
+    borderColor: "#1976D2",
+    borderWidth: 1,
   },
   cancelButton: {
     backgroundColor: "#F44336",
@@ -78,8 +115,8 @@ export const modalStyles = StyleSheet.create({
     width: "100%",
     marginBottom: 10,
     alignItems: "center",
-    borderColor: "#F44336", // Obramowanie przycisku
-    borderWidth: 1, // Obramowanie przycisku
+    borderColor: "#F44336",
+    borderWidth: 1,
   },
   addTransactionButton: {
     backgroundColor: "#1976D2",
@@ -88,7 +125,29 @@ export const modalStyles = StyleSheet.create({
     width: "100%",
     marginBottom: 10,
     alignItems: "center",
-    borderColor: "#1976D2", // Dodane obramowanie
-    borderWidth: 1, // Obramowanie przycisku
+    borderColor: "#1976D2",
+    borderWidth: 1,
+  },
+  content: {
+    width: "100%",
+    paddingVertical: 15,
+  },
+});
+
+export const switchStyles: SwitchStyles = StyleSheet.create({
+  switchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: 10,
+  },
+  switchLabel: {
+    marginHorizontal: 10,
+    fontSize: 16,
+    color: "#757575",
+  },
+  activeLabel: {
+    fontWeight: "bold",
+    color: "#333",
   },
 });

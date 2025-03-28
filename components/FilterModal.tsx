@@ -3,16 +3,21 @@ import {
   Modal,
   View,
   Text,
-  Button,
   TextInput,
+  KeyboardAvoidingView,
   TouchableOpacity,
+  Platform,
+  ScrollView,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { Picker } from "@react-native-picker/picker";
+import { ActionSheetIOS } from "react-native";
 import { layoutStyles } from "../styles/layoutStyles";
 import { buttonStyles } from "../styles/buttonStyles";
 import { typographyStyles } from "../styles/typographyStyles";
 import { modalStyles } from "../styles/modalStyles";
 
+// Deklaracja interfejsów (przywrócona)
 interface Filters {
   category: string;
   minAmount: string;
@@ -42,6 +47,13 @@ const FilterModal: React.FC<FilterModalProps> = ({
     const newOrder = sortOrder === "asc" ? "desc" : "asc";
     setSortOrder(newOrder);
   };
+  const categoryOptions = [
+    "Jedzenie 🍔",
+    "Transport 🚗",
+    "Zakupy 🛍️",
+    "Rachunki 💳",
+    "Inne 🔄",
+  ];
 
   const handleResetFilters = () => {
     setCategory("");
@@ -57,76 +69,127 @@ const FilterModal: React.FC<FilterModalProps> = ({
   };
 
   return (
-    <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
-      <View style={modalStyles.filterContainer}>
-        <Text style={typographyStyles.title}>🔎 Ustaw Filtr</Text>
+    <Modal
+      visible={visible}
+      animationType="fade"
+      transparent={true}
+      onRequestClose={onClose}
+    >
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={modalStyles.modalBackground}
+      >
+        <View style={modalStyles.modalContainer}>
+          {/* Nagłówek */}
+          <View style={modalStyles.modalHeader}>
+            <Text style={modalStyles.modalTitle}>🔎 Ustaw Filtr</Text>
+            <TouchableOpacity onPress={onClose}>
+              <Icon name="times" size={24} color="#333" />
+            </TouchableOpacity>
+          </View>
 
-        <TextInput
-          style={layoutStyles.input}
-          placeholder="Kategoria"
-          value={category}
-          onChangeText={setCategory}
-        />
+          {/* Główna zawartość */}
+          <View style={modalStyles.modalBody}>
+            {/* Wybór kategorii */}
+            {Platform.OS === "ios" ? (
+              <TouchableOpacity
+                style={layoutStyles.inputField}
+                onPress={() =>
+                  ActionSheetIOS.showActionSheetWithOptions(
+                    {
+                      options: [...categoryOptions, "Anuluj"],
+                      cancelButtonIndex: categoryOptions.length,
+                    },
+                    (buttonIndex) => {
+                      if (buttonIndex !== categoryOptions.length) {
+                        setCategory(categoryOptions[buttonIndex]);
+                      }
+                    }
+                  )
+                }
+              >
+                <Text>{category ? category : "Wybierz kategorię"}</Text>
+              </TouchableOpacity>
+            ) : (
+              <View style={layoutStyles.inputField}>
+                <Picker
+                  selectedValue={category}
+                  onValueChange={(itemValue) => setCategory(itemValue)}
+                  style={{ height: 50, width: "100%" }}
+                >
+                  <Picker.Item label="Wybierz kategorię" value="" />
+                  {categoryOptions.map((option) => (
+                    <Picker.Item label={option} value={option} key={option} />
+                  ))}
+                </Picker>
+              </View>
+            )}
 
-        <TextInput
-          style={layoutStyles.input}
-          placeholder="Min kwota"
-          keyboardType="numeric"
-          value={minAmount}
-          onChangeText={setMinAmount}
-        />
-
-        <TextInput
-          style={layoutStyles.input}
-          placeholder="Max kwota"
-          keyboardType="numeric"
-          value={maxAmount}
-          onChangeText={setMaxAmount}
-        />
-
-        {/* Kontener na ikonę sortowania */}
-        <View style={modalStyles.iconRow}>
-          <TouchableOpacity
-            onPress={handleSortToggle}
-            style={modalStyles.sortIconContainer}
-          >
-            <Icon
-              name={
-                sortOrder === "asc" ? "sort-amount-asc" : "sort-amount-desc"
-              }
-              size={24}
-              color="#1976D2"
+            <TextInput
+              style={layoutStyles.inputField}
+              placeholder="Min kwota"
+              keyboardType="numeric"
+              value={minAmount}
+              onChangeText={setMinAmount}
             />
-            <Text style={typographyStyles.sortIconText}>
-              {sortOrder === "asc" ? " Rosnąco" : " Malejąco"}
-            </Text>
-          </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={handleResetFilters}
-            style={typographyStyles.resetIconContainer}
-          >
-            <Icon name="undo" size={24} color="#F44336" />
-            <Text style={typographyStyles.resetIconText}>Resetuj</Text>
-          </TouchableOpacity>
+            <TextInput
+              style={layoutStyles.inputField}
+              placeholder="Max kwota"
+              keyboardType="numeric"
+              value={maxAmount}
+              onChangeText={setMaxAmount}
+            />
+
+            <View style={modalStyles.iconRow}>
+              <TouchableOpacity
+                onPress={handleSortToggle}
+                style={modalStyles.sortIconContainer}
+              >
+                <Icon
+                  name={
+                    sortOrder === "asc" ? "sort-amount-asc" : "sort-amount-desc"
+                  }
+                  size={24}
+                  color="#1976D2"
+                />
+                <Text style={typographyStyles.sortIconText}>
+                  {sortOrder === "asc" ? " Rosnąco" : " Malejąco"}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={handleResetFilters}
+                style={typographyStyles.resetIconContainer}
+              >
+                <Icon name="undo" size={24} color="#F44336" />
+                <Text style={typographyStyles.resetIconText}>Resetuj</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Stopka z przyciskami */}
+          <View style={modalStyles.modalFooter}>
+            <View style={buttonStyles.buttonContainerHorizontal}>
+              <TouchableOpacity
+                style={buttonStyles.primaryButton}
+                onPress={handleApplyFilters}
+              >
+                <Text style={typographyStyles.filterButtonText}>
+                  ZASTOSUJ FILTRY
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <TouchableOpacity
+              style={buttonStyles.secondaryButton}
+              onPress={onClose}
+            >
+              <Text style={typographyStyles.filterButtonText}>ANULUJ</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-
-        {/* Przyciski: zastosuj filtry i anuluj */}
-        <View style={modalStyles.buttonContainer}>
-          <TouchableOpacity
-            style={buttonStyles.filterButton}
-            onPress={handleApplyFilters}
-          >
-            <Text style={typographyStyles.filterButtonText}>
-              ZASTOSUJ FILTRY
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={buttonStyles.cancelButton} onPress={onClose}>
-            <Text style={typographyStyles.filterButtonText}>ANULUJ</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };

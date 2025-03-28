@@ -16,7 +16,15 @@ export const layoutStyles = StyleSheet.create({
     width: "100%",
     marginBottom: 20,
   },
-
+  inputField: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    fontSize: 16,
+    marginBottom: 10,
+  },
   addTransactionButton: {
     backgroundColor: "#1976D2",
     paddingVertical: 12,
