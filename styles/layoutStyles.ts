@@ -9,6 +9,15 @@ export const layoutStyles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#f8f8f8", // Jasne tło
   },
+  dateItem: {
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+    alignItems: "center",
+  },
+  selectedDateItem: {
+    backgroundColor: "#f0f0f0",
+  },
 
   buttonRow: {
     flexDirection: "row",

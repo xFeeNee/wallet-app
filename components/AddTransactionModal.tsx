@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Switch,
+  FlatList,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { ActionSheetIOS } from "react-native";
@@ -42,6 +43,25 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
   const [date, setDate] = useState("");
   const [transactionType, setTransactionType] = useState("income");
   const [isExpense, setIsExpense] = useState(false);
+  const [showDateSelector, setShowDateSelector] = useState(false);
+
+  // Generowanie danych dla selektora
+  const days = Array.from({ length: 31 }, (_, i) => (i + 1).toString());
+  const months = [
+    "01 - Styczeń",
+    "02 - Luty",
+    "03 - Marzec",
+    "04 - Kwiecień",
+    "05 - Maj",
+    "06 - Czerwiec",
+    "07 - Lipiec",
+    "08 - Sierpień",
+    "09 - Wrzesień",
+    "10 - Październik",
+    "11 - Listopad",
+    "12 - Grudzień",
+  ];
+  const years = Array.from({ length: 20 }, (_, i) => (2025 - i).toString());
 
   const categoryOptions = [
     "Jedzenie 🍔",
@@ -50,6 +70,13 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
     "Rachunki 💳",
     "Inne 🔄",
   ];
+
+  const handleDateSelect = (day: string, month: string, year: string) => {
+    const currentMonth = month.split(" - ")[0]; // Rozdziel miesiąc na numer i nazwę
+    const formattedDate = `${day.padStart(2, "0")}.${currentMonth}.${year}`;
+    setDate(formattedDate);
+    setShowDateSelector(false);
+  };
 
   const handleAddTransaction = () => {
     if (!title || !amount || !category || !date) {
@@ -60,8 +87,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
     const newTransaction = {
       id: Date.now(),
       title,
-      amount:
-        transactionType === "income" ? parseFloat(amount) : -parseFloat(amount),
+      amount: isExpense ? -parseFloat(amount) : parseFloat(amount),
       category,
       date,
     };
@@ -71,9 +97,94 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
     setAmount("");
     setCategory("");
     setDate("");
-    setTransactionType("income");
+    setIsExpense(false);
     onClose();
   };
+
+  const DateSelectorModal = () => (
+    <Modal visible={showDateSelector} transparent animationType="slide">
+      <View style={modalStyles.modalBackground}>
+        <View style={modalStyles.modalContainer}>
+          <View style={modalStyles.modalHeader}>
+            <Text style={modalStyles.modalTitle}>📅 Wybierz datę</Text>
+            <TouchableOpacity onPress={() => setShowDateSelector(false)}>
+              <Icon name="times" size={24} color="#333" />
+            </TouchableOpacity>
+          </View>
+
+          <View style={{ flexDirection: "row", height: 200 }}>
+            <FlatList
+              data={days}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={[
+                    layoutStyles.dateItem,
+                    date.startsWith(item.padStart(2, "0")) &&
+                      layoutStyles.selectedDateItem,
+                  ]}
+                  onPress={() =>
+                    handleDateSelect(
+                      item,
+                      date.split(".")[1],
+                      date.split(".")[2]
+                    )
+                  }
+                >
+                  <Text>{item}</Text>
+                </TouchableOpacity>
+              )}
+              keyExtractor={(item) => item}
+            />
+
+            <FlatList
+              data={months}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={[
+                    layoutStyles.dateItem,
+                    date.split(".")[1] === item.split(" - ")[0] &&
+                      layoutStyles.selectedDateItem,
+                  ]}
+                  onPress={() =>
+                    handleDateSelect(
+                      date.split(".")[0],
+                      item.split(" - ")[0],
+                      date.split(".")[2]
+                    )
+                  }
+                >
+                  <Text>{item.split(" - ")[1]}</Text>
+                </TouchableOpacity>
+              )}
+              keyExtractor={(item) => item}
+            />
+
+            <FlatList
+              data={years}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={[
+                    layoutStyles.dateItem,
+                    date.endsWith(item) && layoutStyles.selectedDateItem,
+                  ]}
+                  onPress={() =>
+                    handleDateSelect(
+                      date.split(".")[0],
+                      date.split(".")[1],
+                      item
+                    )
+                  }
+                >
+                  <Text>{item}</Text>
+                </TouchableOpacity>
+              )}
+              keyExtractor={(item) => item}
+            />
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
 
   return (
     <Modal
@@ -87,7 +198,6 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
         style={modalStyles.modalBackground}
       >
         <View style={modalStyles.modalContainer}>
-          {/* Nagłówek */}
           <View style={modalStyles.modalHeader}>
             <Text style={modalStyles.modalTitle}>➕ Dodaj nową transakcję</Text>
             <TouchableOpacity onPress={onClose}>
@@ -95,7 +205,6 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
             </TouchableOpacity>
           </View>
 
-          {/* Główna zawartość */}
           <ScrollView style={modalStyles.modalBody}>
             <TextInput
               style={layoutStyles.inputField}
@@ -112,14 +221,13 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
               onChangeText={setAmount}
             />
 
-            <TextInput
+            <TouchableOpacity
               style={layoutStyles.inputField}
-              placeholder="Data (np. 22.03.2025)"
-              value={date}
-              onChangeText={setDate}
-            />
+              onPress={() => setShowDateSelector(true)}
+            >
+              <Text>{date || "Wybierz datę..."}</Text>
+            </TouchableOpacity>
 
-            {/* Wybór kategorii */}
             {Platform.OS === "ios" ? (
               <TouchableOpacity
                 style={layoutStyles.inputField}
@@ -137,13 +245,13 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
                   )
                 }
               >
-                <Text>{category ? category : "Wybierz kategorię"}</Text>
+                <Text>{category || "Wybierz kategorię"}</Text>
               </TouchableOpacity>
             ) : (
               <View style={layoutStyles.inputField}>
                 <Picker
                   selectedValue={category}
-                  onValueChange={(itemValue) => setCategory(itemValue)}
+                  onValueChange={setCategory}
                   style={{ height: 50, width: "100%" }}
                 >
                   <Picker.Item label="Wybierz kategorię" value="" />
@@ -155,34 +263,31 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
             )}
           </ScrollView>
 
-          {/* Wybór typu transakcji */}
           <View style={switchStyles.switchContainer}>
             <Text
               style={[
                 switchStyles.switchLabel,
-                !isExpense ? switchStyles.activeLabel : undefined,
+                !isExpense && switchStyles.activeLabel,
               ]}
             >
               Przychód
             </Text>
             <Switch
               trackColor={{ false: "#4CAF50", true: "#F44336" }}
-              thumbColor={isExpense ? "#fff" : "#fff"}
-              ios_backgroundColor="#4CAF50"
-              onValueChange={() => setIsExpense((prevState) => !prevState)}
+              thumbColor="#fff"
+              onValueChange={() => setIsExpense(!isExpense)}
               value={isExpense}
             />
             <Text
               style={[
                 switchStyles.switchLabel,
-                isExpense ? switchStyles.activeLabel : undefined,
+                isExpense && switchStyles.activeLabel,
               ]}
             >
               Wydatek
             </Text>
           </View>
 
-          {/* Stopka z przyciskami */}
           <View style={modalStyles.modalFooter}>
             <TouchableOpacity
               style={buttonStyles.primaryButton}
@@ -202,6 +307,8 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
           </View>
         </View>
       </KeyboardAvoidingView>
+
+      <DateSelectorModal />
     </Modal>
   );
 };
