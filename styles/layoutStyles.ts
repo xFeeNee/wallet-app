@@ -1,5 +1,5 @@
 // layoutStyles.ts
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 
 export const layoutStyles = StyleSheet.create({
   container: {
@@ -9,14 +9,74 @@ export const layoutStyles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#f8f8f8", // Jasne tło
   },
-  dateItem: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-    alignItems: "center",
-  },
   selectedDateItem: {
     backgroundColor: "#f0f0f0",
+  },
+  datePickerContainer: {
+    position: "relative",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 12,
+    backgroundColor: "#f5f5f5",
+    borderRadius: 8,
+    padding: 4,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+  },
+  datePicker: {
+    ...Platform.select({
+      ios: {
+        top: -68,
+        height: 80,
+      },
+      android: {
+        height: 50,
+        width: "100%",
+      },
+    }),
+    width: "100%",
+  },
+  datePickerColumn: {
+    flex: 1,
+    marginHorizontal: 2,
+    backgroundColor: "white",
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+    overflow: "hidden",
+    ...Platform.select({
+      android: {
+        height: 60,
+      },
+      ios: {
+        paddingTop: 20, // Dodaj padding na górze dla iOS
+      },
+    }),
+  },
+
+  datePickerLabel: {
+    textAlign: "center",
+    padding: 4,
+    backgroundColor: "#f0f0f0",
+    borderBottomWidth: 1,
+    borderBottomColor: "#e0e0e0",
+    fontWeight: "500",
+    ...Platform.select({
+      android: {
+        position: "absolute",
+        top: -25,
+        left: 0,
+        right: 0,
+        zIndex: 1,
+      },
+      ios: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1,
+      },
+    }),
   },
 
   buttonRow: {

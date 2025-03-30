@@ -10,7 +10,6 @@ import {
   TouchableOpacity,
   ScrollView,
   Switch,
-  FlatList,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { ActionSheetIOS } from "react-native";
@@ -19,6 +18,9 @@ import { layoutStyles } from "../styles/layoutStyles";
 import { buttonStyles } from "../styles/buttonStyles";
 import { typographyStyles } from "../styles/typographyStyles";
 import { modalStyles, switchStyles } from "../styles/modalStyles";
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
 
 interface AddTransactionModalProps {
   visible: boolean;
@@ -41,11 +43,10 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [date, setDate] = useState("");
-  const [transactionType, setTransactionType] = useState("income");
   const [isExpense, setIsExpense] = useState(false);
-  const [showDateSelector, setShowDateSelector] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
-  // Generowanie danych dla selektora
+  // Generowanie danych dla selektora iOS
   const days = Array.from({ length: 31 }, (_, i) => (i + 1).toString());
   const months = [
     "01 - Styczeń",
@@ -71,11 +72,32 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
     "Inne 🔄",
   ];
 
-  const handleDateSelect = (day: string, month: string, year: string) => {
-    const currentMonth = month.split(" - ")[0]; // Rozdziel miesiąc na numer i nazwę
-    const formattedDate = `${day.padStart(2, "0")}.${currentMonth}.${year}`;
-    setDate(formattedDate);
-    setShowDateSelector(false);
+  // Funkcja do konwersji formatu daty
+  const formatDate = (dateObj: Date): string => {
+    const day = dateObj.getDate().toString().padStart(2, "0");
+    const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
+    const year = dateObj.getFullYear().toString();
+    return `${day}.${month}.${year}`;
+  };
+
+  // Funkcja do parsowania daty z formatu string do obiektu Date
+  const parseDate = (dateString: string): Date => {
+    if (!dateString) {
+      return new Date();
+    }
+    const [day, month, year] = dateString.split(".");
+    return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+  };
+
+  // Obsługa zmiany daty w DatePicker dla Androida
+  const onDateChange = (
+    event: DateTimePickerEvent,
+    selectedDate?: Date
+  ): void => {
+    setShowDatePicker(false);
+    if (selectedDate) {
+      setDate(formatDate(selectedDate));
+    }
   };
 
   const handleAddTransaction = () => {
@@ -100,91 +122,6 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
     setIsExpense(false);
     onClose();
   };
-
-  const DateSelectorModal = () => (
-    <Modal visible={showDateSelector} transparent animationType="slide">
-      <View style={modalStyles.modalBackground}>
-        <View style={modalStyles.modalContainer}>
-          <View style={modalStyles.modalHeader}>
-            <Text style={modalStyles.modalTitle}>📅 Wybierz datę</Text>
-            <TouchableOpacity onPress={() => setShowDateSelector(false)}>
-              <Icon name="times" size={24} color="#333" />
-            </TouchableOpacity>
-          </View>
-
-          <View style={{ flexDirection: "row", height: 200 }}>
-            <FlatList
-              data={days}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={[
-                    layoutStyles.dateItem,
-                    date.startsWith(item.padStart(2, "0")) &&
-                      layoutStyles.selectedDateItem,
-                  ]}
-                  onPress={() =>
-                    handleDateSelect(
-                      item,
-                      date.split(".")[1],
-                      date.split(".")[2]
-                    )
-                  }
-                >
-                  <Text>{item}</Text>
-                </TouchableOpacity>
-              )}
-              keyExtractor={(item) => item}
-            />
-
-            <FlatList
-              data={months}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={[
-                    layoutStyles.dateItem,
-                    date.split(".")[1] === item.split(" - ")[0] &&
-                      layoutStyles.selectedDateItem,
-                  ]}
-                  onPress={() =>
-                    handleDateSelect(
-                      date.split(".")[0],
-                      item.split(" - ")[0],
-                      date.split(".")[2]
-                    )
-                  }
-                >
-                  <Text>{item.split(" - ")[1]}</Text>
-                </TouchableOpacity>
-              )}
-              keyExtractor={(item) => item}
-            />
-
-            <FlatList
-              data={years}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={[
-                    layoutStyles.dateItem,
-                    date.endsWith(item) && layoutStyles.selectedDateItem,
-                  ]}
-                  onPress={() =>
-                    handleDateSelect(
-                      date.split(".")[0],
-                      date.split(".")[1],
-                      item
-                    )
-                  }
-                >
-                  <Text>{item}</Text>
-                </TouchableOpacity>
-              )}
-              keyExtractor={(item) => item}
-            />
-          </View>
-        </View>
-      </View>
-    </Modal>
-  );
 
   return (
     <Modal
@@ -221,12 +158,87 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
               onChangeText={setAmount}
             />
 
-            <TouchableOpacity
-              style={layoutStyles.inputField}
-              onPress={() => setShowDateSelector(true)}
-            >
-              <Text>{date || "Wybierz datę..."}</Text>
-            </TouchableOpacity>
+            {Platform.OS === "ios" ? (
+              <View style={layoutStyles.datePickerContainer}>
+                <View style={layoutStyles.datePickerColumn}>
+                  <Text style={layoutStyles.datePickerLabel}>Dzień</Text>
+                  <Picker
+                    selectedValue={date.split(".")[0] || "01"}
+                    onValueChange={(value) => {
+                      const parts = date.split(".");
+                      setDate(
+                        `${value}.${parts[1] || "01"}.${parts[2] || "2025"}`
+                      );
+                    }}
+                    style={layoutStyles.datePicker}
+                  >
+                    {days.map((day) => (
+                      <Picker.Item
+                        key={day}
+                        label={day}
+                        value={day.padStart(2, "0")}
+                      />
+                    ))}
+                  </Picker>
+                </View>
+
+                <View style={layoutStyles.datePickerColumn}>
+                  <Text style={layoutStyles.datePickerLabel}>Miesiąc</Text>
+                  <Picker
+                    selectedValue={date.split(".")[1] || "01"}
+                    onValueChange={(value) => {
+                      const parts = date.split(".");
+                      setDate(
+                        `${parts[0] || "01"}.${value}.${parts[2] || "2025"}`
+                      );
+                    }}
+                    style={layoutStyles.datePicker}
+                  >
+                    {months.map((month) => (
+                      <Picker.Item
+                        key={month}
+                        label={month.split(" - ")[1]}
+                        value={month.split(" - ")[0]}
+                      />
+                    ))}
+                  </Picker>
+                </View>
+
+                <View style={layoutStyles.datePickerColumn}>
+                  <Text style={layoutStyles.datePickerLabel}>Rok</Text>
+                  <Picker
+                    selectedValue={date.split(".")[2] || "2025"}
+                    onValueChange={(value) => {
+                      const parts = date.split(".");
+                      setDate(
+                        `${parts[0] || "01"}.${parts[1] || "01"}.${value}`
+                      );
+                    }}
+                    style={layoutStyles.datePicker}
+                  >
+                    {years.map((year) => (
+                      <Picker.Item key={year} label={year} value={year} />
+                    ))}
+                  </Picker>
+                </View>
+              </View>
+            ) : (
+              <TouchableOpacity
+                style={layoutStyles.inputField}
+                onPress={() => setShowDatePicker(true)}
+              >
+                <Text>{date || "Wybierz datę"}</Text>
+              </TouchableOpacity>
+            )}
+
+            {Platform.OS === "android" && showDatePicker && (
+              <DateTimePicker
+                value={parseDate(date)}
+                mode="date"
+                display="default"
+                onChange={onDateChange}
+              />
+            )}
 
             {Platform.OS === "ios" ? (
               <TouchableOpacity
@@ -307,8 +319,6 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
           </View>
         </View>
       </KeyboardAvoidingView>
-
-      <DateSelectorModal />
     </Modal>
   );
 };
