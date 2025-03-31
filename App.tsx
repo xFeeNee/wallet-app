@@ -15,40 +15,40 @@ import { typographyStyles } from "./styles/typographyStyles";
 import { transactionStyles } from "./styles/transactionStyles";
 import { buttonStyles } from "./styles/buttonStyles";
 
-// Przykładowe dane transakcji
+// Sample transaction data
 const initialTransactions: Transaction[] = [
   {
     id: 1,
-    title: "Zakupy",
+    title: "Shopping",
     amount: -50,
-    category: "Zakupy 🛍️", // Kategoria z emoji
+    category: "Shopping 🛍️", // Category with emoji
     date: "2025-03-22",
   },
   {
     id: 2,
-    title: "Wypłata",
+    title: "Salary",
     amount: 3000,
-    category: "Inne 🔄", // Kategoria z emoji
+    category: "Other 🔄", // Category with emoji
     date: "2025-03-23",
   },
   {
     id: 3,
     title: "Transport",
     amount: -100,
-    category: "Transport 🚗", // Kategoria z emoji
+    category: "Transport 🚗", // Category with emoji
     date: "2025-03-23",
   },
 ];
 
 export default function App() {
-  // Stan przechowujący dane transakcji
+  // State storing transaction data
   const [transactions, setTransactions] =
     useState<Transaction[]>(initialTransactions);
   const [isAddTransactionModalVisible, setAddTransactionModalVisible] =
     useState(false);
   const [isFilterModalVisible, setFilterModalVisible] = useState(false);
 
-  // Stan filtrów
+  // Filter state
   const [filters, setFilters] = useState({
     category: "",
     minAmount: "",
@@ -57,19 +57,19 @@ export default function App() {
     sortOrder: "asc",
   });
 
-  // Funkcja do usuwania transakcji
+  // Function to delete a transaction
   const handleDeleteTransaction = (id: number) => {
     setTransactions(
       transactions.filter((transaction) => transaction.id !== id)
     );
   };
 
-  // Funkcja do dodawania transakcji
+  // Function to add a transaction
   const addTransaction = (newTransaction: Transaction) => {
     setTransactions([...transactions, newTransaction]);
   };
 
-  // Funkcja do obliczania salda
+  // Function to calculate balance
   const calculateBalance = () => {
     return transactions.reduce(
       (total, transaction) => total + transaction.amount,
@@ -77,13 +77,13 @@ export default function App() {
     );
   };
 
-  // Zastosowanie filtrów
+  // Apply filters
   const handleApplyFilters = (newFilters: typeof filters) => {
     setFilters(newFilters);
     setFilterModalVisible(false);
   };
 
-  // Filtrujemy transakcje na podstawie filtrów
+  // Filter transactions based on filters
   const filteredTransactions = [...transactions]
     .filter((transaction) => {
       const { category, minAmount, maxAmount, date } = filters;
@@ -104,16 +104,16 @@ export default function App() {
 
   return (
     <SafeAreaView style={layoutStyles.container}>
-      <Text style={typographyStyles.title}>💰 Monitor Portfela</Text>
+      <Text style={typographyStyles.title}>💰 Wallet Monitor</Text>
 
-      {/* Wyświetlanie salda */}
+      {/* Display balance */}
       <View style={transactionStyles.balanceContainer}>
         <Text style={typographyStyles.balanceTitle}>
-          Saldo: {calculateBalance().toFixed(2)} zł
+          Balance: {calculateBalance().toFixed(2)} PLN
         </Text>
       </View>
 
-      {/* Przycisk dodawania transakcji */}
+      {/* Add transaction button */}
       <View style={layoutStyles.buttonRow}>
         <TouchableOpacity
           style={buttonStyles.addTransactionButton}
@@ -121,7 +121,7 @@ export default function App() {
         >
           <Icon name="plus" size={18} color="#fff" />
           <Text style={typographyStyles.addTransactionText}>
-            DODAJ TRANSAKCJĘ
+            ADD TRANSACTION
           </Text>
         </TouchableOpacity>
 
@@ -133,21 +133,21 @@ export default function App() {
         </TouchableOpacity>
       </View>
 
-      {/* Modal dodawania transakcji */}
+      {/* Add transaction modal */}
       <AddTransactionModal
         visible={isAddTransactionModalVisible}
         onClose={() => setAddTransactionModalVisible(false)}
         onAddTransaction={addTransaction}
       />
 
-      {/* Modal filtrów */}
+      {/* Filter modal */}
       <FilterModal
         visible={isFilterModalVisible}
         onClose={() => setFilterModalVisible(false)}
         onApplyFilters={handleApplyFilters}
       />
 
-      {/* Lista transakcji */}
+      {/* Transaction list */}
       <FlatList
         data={filteredTransactions}
         keyExtractor={(item) => item.id.toString()}
@@ -170,11 +170,11 @@ export default function App() {
                 ]}
               >
                 {item.amount < 0
-                  ? `- ${Math.abs(item.amount)} zł`
-                  : `+ ${item.amount} zł`}
+                  ? `- ${Math.abs(item.amount)} PLN`
+                  : `+ ${item.amount} PLN`}
               </Text>
               <Text style={transactionStyles.transactionCategory}>
-                {item.category} {/* Wyświetlanie kategorii z emoji */}
+                {item.category} {/* Displaying category with emoji */}
               </Text>
             </View>
 
@@ -182,7 +182,7 @@ export default function App() {
               onPress={() => handleDeleteTransaction(item.id)}
               style={transactionStyles.deleteButton}
             >
-              <Text style={transactionStyles.deleteButtonText}>Usuń</Text>
+              <Text style={transactionStyles.deleteButtonText}>Delete</Text>
             </TouchableOpacity>
           </View>
         )}

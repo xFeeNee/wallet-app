@@ -46,33 +46,33 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
   const [isExpense, setIsExpense] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  // Generowanie danych dla selektora iOS
+  // Generating data for iOS selector
   const days = Array.from({ length: 31 }, (_, i) => (i + 1).toString());
   const months = [
-    "01 - Styczeń",
-    "02 - Luty",
-    "03 - Marzec",
-    "04 - Kwiecień",
-    "05 - Maj",
-    "06 - Czerwiec",
-    "07 - Lipiec",
-    "08 - Sierpień",
-    "09 - Wrzesień",
-    "10 - Październik",
-    "11 - Listopad",
-    "12 - Grudzień",
+    "01 - January",
+    "02 - February",
+    "03 - March",
+    "04 - April",
+    "05 - May",
+    "06 - June",
+    "07 - July",
+    "08 - August",
+    "09 - September",
+    "10 - October",
+    "11 - November",
+    "12 - December",
   ];
   const years = Array.from({ length: 20 }, (_, i) => (2025 - i).toString());
 
   const categoryOptions = [
-    "Jedzenie 🍔",
+    "Food 🍔",
     "Transport 🚗",
-    "Zakupy 🛍️",
-    "Rachunki 💳",
-    "Inne 🔄",
+    "Shopping 🛍️",
+    "Bills 💳",
+    "Other 🔄",
   ];
 
-  // Funkcja do konwersji formatu daty
+  // Function to convert date format
   const formatDate = (dateObj: Date): string => {
     const day = dateObj.getDate().toString().padStart(2, "0");
     const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
@@ -80,7 +80,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
     return `${day}.${month}.${year}`;
   };
 
-  // Funkcja do parsowania daty z formatu string do obiektu Date
+  // Function to parse date from string format to Date object
   const parseDate = (dateString: string): Date => {
     if (!dateString) {
       return new Date();
@@ -89,7 +89,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
     return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
   };
 
-  // Obsługa zmiany daty w DatePicker dla Androida
+  // Handle date change in DatePicker for Android
   const onDateChange = (
     event: DateTimePickerEvent,
     selectedDate?: Date
@@ -102,7 +102,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
 
   const handleAddTransaction = () => {
     if (!title || !amount || !category || !date) {
-      Alert.alert("Błąd", "Wszystkie pola są wymagane.");
+      Alert.alert("Error", "All fields are required.");
       return;
     }
 
@@ -136,23 +136,22 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
       >
         <View style={modalStyles.modalContainer}>
           <View style={modalStyles.modalHeader}>
-            <Text style={modalStyles.modalTitle}>➕ Dodaj nową transakcję</Text>
+            <Text style={modalStyles.modalTitle}>➕ Add new transaction</Text>
             <TouchableOpacity onPress={onClose}>
               <Icon name="times" size={24} color="#333" />
             </TouchableOpacity>
           </View>
-
           <ScrollView style={modalStyles.modalBody}>
             <TextInput
               style={layoutStyles.inputField}
-              placeholder="Nazwa"
+              placeholder="Name"
               value={title}
               onChangeText={setTitle}
             />
 
             <TextInput
               style={layoutStyles.inputField}
-              placeholder="Kwota"
+              placeholder="Amount"
               keyboardType="numeric"
               value={amount}
               onChangeText={setAmount}
@@ -161,7 +160,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
             {Platform.OS === "ios" ? (
               <View style={layoutStyles.datePickerContainer}>
                 <View style={layoutStyles.datePickerColumn}>
-                  <Text style={layoutStyles.datePickerLabel}>Dzień</Text>
+                  <Text style={layoutStyles.datePickerLabel}>Day</Text>
                   <Picker
                     selectedValue={date.split(".")[0] || "01"}
                     onValueChange={(value) => {
@@ -183,7 +182,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
                 </View>
 
                 <View style={layoutStyles.datePickerColumn}>
-                  <Text style={layoutStyles.datePickerLabel}>Miesiąc</Text>
+                  <Text style={layoutStyles.datePickerLabel}>Month</Text>
                   <Picker
                     selectedValue={date.split(".")[1] || "01"}
                     onValueChange={(value) => {
@@ -205,7 +204,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
                 </View>
 
                 <View style={layoutStyles.datePickerColumn}>
-                  <Text style={layoutStyles.datePickerLabel}>Rok</Text>
+                  <Text style={layoutStyles.datePickerLabel}>Year</Text>
                   <Picker
                     selectedValue={date.split(".")[2] || "2025"}
                     onValueChange={(value) => {
@@ -227,7 +226,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
                 style={layoutStyles.inputField}
                 onPress={() => setShowDatePicker(true)}
               >
-                <Text>{date || "Wybierz datę"}</Text>
+                <Text>{date || "Select date"}</Text>
               </TouchableOpacity>
             )}
 
@@ -246,7 +245,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
                 onPress={() =>
                   ActionSheetIOS.showActionSheetWithOptions(
                     {
-                      options: [...categoryOptions, "Anuluj"],
+                      options: [...categoryOptions, "Cancel"],
                       cancelButtonIndex: categoryOptions.length,
                     },
                     (buttonIndex) => {
@@ -257,7 +256,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
                   )
                 }
               >
-                <Text>{category || "Wybierz kategorię"}</Text>
+                <Text>{category || "Select category"}</Text>
               </TouchableOpacity>
             ) : (
               <View style={layoutStyles.inputField}>
@@ -266,7 +265,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
                   onValueChange={setCategory}
                   style={{ height: 50, width: "100%" }}
                 >
-                  <Picker.Item label="Wybierz kategorię" value="" />
+                  <Picker.Item label="Select category" value="" />
                   {categoryOptions.map((option) => (
                     <Picker.Item label={option} value={option} key={option} />
                   ))}
@@ -274,7 +273,6 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
               </View>
             )}
           </ScrollView>
-
           <View style={switchStyles.switchContainer}>
             <Text
               style={[
@@ -282,7 +280,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
                 !isExpense && switchStyles.activeLabel,
               ]}
             >
-              Przychód
+              Income
             </Text>
             <Switch
               trackColor={{ false: "#4CAF50", true: "#F44336" }}
@@ -296,7 +294,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
                 isExpense && switchStyles.activeLabel,
               ]}
             >
-              Wydatek
+              Expense
             </Text>
           </View>
 
@@ -306,7 +304,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
               onPress={handleAddTransaction}
             >
               <Text style={typographyStyles.filterButtonText}>
-                DODAJ TRANSAKCJĘ
+                ADD TRANSACTION
               </Text>
             </TouchableOpacity>
 
@@ -314,7 +312,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
               style={buttonStyles.secondaryButton}
               onPress={onClose}
             >
-              <Text style={typographyStyles.filterButtonText}>ANULUJ</Text>
+              <Text style={typographyStyles.filterButtonText}>CANCEL</Text>
             </TouchableOpacity>
           </View>
         </View>

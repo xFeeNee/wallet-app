@@ -18,7 +18,7 @@ import { buttonStyles } from "../styles/buttonStyles";
 import { typographyStyles } from "../styles/typographyStyles";
 import { modalStyles } from "../styles/modalStyles";
 
-// Deklaracja interfejsów
+// Interface declarations
 interface Filters {
   category: string;
   minAmount: string;
@@ -51,11 +51,11 @@ const FilterModal: React.FC<FilterModalProps> = ({
   };
 
   const categoryOptions = [
-    "Jedzenie 🍔",
+    "Food 🍔",
     "Transport 🚗",
-    "Zakupy 🛍️",
-    "Rachunki 💳",
-    "Inne 🔄",
+    "Shopping 🛍️",
+    "Bills 💳",
+    "Other 🔄",
   ];
 
   const handleResetFilters = () => {
@@ -91,24 +91,24 @@ const FilterModal: React.FC<FilterModalProps> = ({
         style={modalStyles.modalBackground}
       >
         <View style={modalStyles.modalContainer}>
-          {/* Nagłówek */}
+          {/* Header */}
           <View style={modalStyles.modalHeader}>
-            <Text style={modalStyles.modalTitle}>🔎 Ustaw Filtr</Text>
+            <Text style={modalStyles.modalTitle}>🔎 Set Filter</Text>
             <TouchableOpacity onPress={onClose}>
               <Icon name="times" size={24} color="#333" />
             </TouchableOpacity>
           </View>
 
-          {/* Główna zawartość */}
+          {/* Main content */}
           <View style={modalStyles.modalBody}>
-            {/* Wybór kategorii */}
+            {/* Category selection */}
             {Platform.OS === "ios" ? (
               <TouchableOpacity
                 style={layoutStyles.inputField}
                 onPress={() =>
                   ActionSheetIOS.showActionSheetWithOptions(
                     {
-                      options: [...categoryOptions, "Anuluj"],
+                      options: [...categoryOptions, "Cancel"],
                       cancelButtonIndex: categoryOptions.length,
                     },
                     (buttonIndex) => {
@@ -119,7 +119,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
                   )
                 }
               >
-                <Text>{category ? category : "Wybierz kategorię"}</Text>
+                <Text>{category ? category : "Select category"}</Text>
               </TouchableOpacity>
             ) : (
               <View style={layoutStyles.inputField}>
@@ -128,7 +128,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
                   onValueChange={(itemValue) => setCategory(itemValue)}
                   style={{ height: 50, width: "100%" }}
                 >
-                  <Picker.Item label="Wybierz kategorię" value="" />
+                  <Picker.Item label="Select category" value="" />
                   {categoryOptions.map((option) => (
                     <Picker.Item label={option} value={option} key={option} />
                   ))}
@@ -138,7 +138,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
 
             <TextInput
               style={layoutStyles.inputField}
-              placeholder="Min kwota"
+              placeholder="Min amount"
               keyboardType="numeric"
               value={minAmount}
               onChangeText={setMinAmount}
@@ -146,18 +146,18 @@ const FilterModal: React.FC<FilterModalProps> = ({
 
             <TextInput
               style={layoutStyles.inputField}
-              placeholder="Max kwota"
+              placeholder="Max amount"
               keyboardType="numeric"
               value={maxAmount}
               onChangeText={setMaxAmount}
             />
 
-            {/* Wybór daty */}
+            {/* Date selection */}
             <TouchableOpacity
               style={layoutStyles.inputField}
               onPress={() => setShowDatePicker(true)}
             >
-              <Text>{date ? date : "Wybierz datę transakcji"}</Text>
+              <Text>{date ? date : "Select transaction date"}</Text>
             </TouchableOpacity>
 
             {showDatePicker && (
@@ -182,7 +182,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
                   color="#1976D2"
                 />
                 <Text style={typographyStyles.sortIconText}>
-                  {sortOrder === "asc" ? " Rosnąco" : " Malejąco"}
+                  {sortOrder === "asc" ? " Ascending" : " Descending"}
                 </Text>
               </TouchableOpacity>
 
@@ -191,12 +191,12 @@ const FilterModal: React.FC<FilterModalProps> = ({
                 style={typographyStyles.resetIconContainer}
               >
                 <Icon name="undo" size={24} color="#F44336" />
-                <Text style={typographyStyles.resetIconText}>Resetuj</Text>
+                <Text style={typographyStyles.resetIconText}>Reset</Text>
               </TouchableOpacity>
             </View>
           </View>
 
-          {/* Stopka z przyciskami */}
+          {/* Footer with buttons */}
           <View style={modalStyles.modalFooter}>
             <View style={buttonStyles.buttonContainerHorizontal}>
               <TouchableOpacity
@@ -204,7 +204,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
                 onPress={handleApplyFilters}
               >
                 <Text style={typographyStyles.filterButtonText}>
-                  ZASTOSUJ FILTRY
+                  APPLY FILTERS
                 </Text>
               </TouchableOpacity>
             </View>
@@ -213,7 +213,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
               style={buttonStyles.secondaryButton}
               onPress={onClose}
             >
-              <Text style={typographyStyles.filterButtonText}>ANULUJ</Text>
+              <Text style={typographyStyles.filterButtonText}>CANCEL</Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -49,7 +49,7 @@ export const layoutStyles = StyleSheet.create({
         height: 60,
       },
       ios: {
-        paddingTop: 20, // Dodaj padding na górze dla iOS
+        paddingTop: 20,
       },
     }),
   },
@@ -115,7 +115,7 @@ export const layoutStyles = StyleSheet.create({
   input: {
     height: 50,
     width: "100%",
-    borderColor: "#ccc", // Jasne obramowanie
+    borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 10,
     paddingLeft: 15,
