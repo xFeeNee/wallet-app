@@ -1,5 +1,5 @@
 // types/Transaction.ts
-export type Category =
+type Category =
   | "Jedzenie 🍔"
   | "Transport 🚗"
   | "Zakupy 🛍️"
