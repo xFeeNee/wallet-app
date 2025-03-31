@@ -24,7 +24,7 @@ To run the project locally, follow these steps:
 
 ```sh
 # Clone the repository
-git clone https://github.com/your-repo/wallet-monitor.git
+git clone https://github.com/xFeeNee/wallet-monitor.git
 cd wallet-monitor
 
 # Install dependencies
@@ -61,7 +61,7 @@ Aby uruchomić projekt lokalnie, wykonaj następujące kroki:
 
 ```sh
 # Klonowanie repozytorium
-git clone https://github.com/your-repo/wallet-monitor.git
+git clone https://github.com/xFeeNee/wallet-monitor.git
 cd wallet-monitor
 
 # Instalacja zależności
