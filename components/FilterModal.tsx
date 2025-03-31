@@ -12,12 +12,13 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Picker } from "@react-native-picker/picker";
 import { ActionSheetIOS } from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { layoutStyles } from "../styles/layoutStyles";
 import { buttonStyles } from "../styles/buttonStyles";
 import { typographyStyles } from "../styles/typographyStyles";
 import { modalStyles } from "../styles/modalStyles";
 
-// Deklaracja interfejsów (przywrócona)
+// Deklaracja interfejsów
 interface Filters {
   category: string;
   minAmount: string;
@@ -42,11 +43,13 @@ const FilterModal: React.FC<FilterModalProps> = ({
   const [maxAmount, setMaxAmount] = useState<string>("");
   const [date, setDate] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
 
   const handleSortToggle = () => {
     const newOrder = sortOrder === "asc" ? "desc" : "asc";
     setSortOrder(newOrder);
   };
+
   const categoryOptions = [
     "Jedzenie 🍔",
     "Transport 🚗",
@@ -66,6 +69,14 @@ const FilterModal: React.FC<FilterModalProps> = ({
   const handleApplyFilters = () => {
     onApplyFilters({ category, minAmount, maxAmount, date, sortOrder });
     onClose();
+  };
+
+  const handleDateChange = (event: any, selectedDate?: Date) => {
+    setShowDatePicker(false);
+    if (selectedDate) {
+      const formattedDate = selectedDate.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+      setDate(formattedDate);
+    }
   };
 
   return (
@@ -141,6 +152,23 @@ const FilterModal: React.FC<FilterModalProps> = ({
               onChangeText={setMaxAmount}
             />
 
+            {/* Wybór daty */}
+            <TouchableOpacity
+              style={layoutStyles.inputField}
+              onPress={() => setShowDatePicker(true)}
+            >
+              <Text>{date ? date : "Wybierz datę transakcji"}</Text>
+            </TouchableOpacity>
+
+            {showDatePicker && (
+              <DateTimePicker
+                value={date ? new Date(date) : new Date()}
+                mode="date"
+                display="default"
+                onChange={handleDateChange}
+              />
+            )}
+
             <View style={modalStyles.iconRow}>
               <TouchableOpacity
                 onPress={handleSortToggle}
@@ -193,5 +221,4 @@ const FilterModal: React.FC<FilterModalProps> = ({
     </Modal>
   );
 };
-
 export default FilterModal;
